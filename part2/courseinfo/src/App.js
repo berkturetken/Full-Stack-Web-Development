@@ -23,6 +23,14 @@ const Course = ( {course} ) => {
   )
 }
 
+const Sum = ( {course} ) => {
+  const initialValue = 0
+  const sum = course.parts.reduce((sum, coursePart) => sum + coursePart.exercises, initialValue)
+  return (
+    <b>total of {sum} exercises</b>
+  )
+}
+
 const App = () => {
   const course = {
     id: 1,
@@ -43,15 +51,20 @@ const App = () => {
         exercises: 14,
         id: 3
       },
-      // {
-      //   name: 'Test',
-      //   exercises: 9,
-      //   id: 4
-      // },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
+      },
     ]
   }
 
-  return <Course course={course} />
+  return (
+    <>
+      <Course course={course} />
+      <Sum course={course} />
+    </>
+  )
 }
 
 export default App
