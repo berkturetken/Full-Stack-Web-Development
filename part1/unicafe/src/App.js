@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Display = ({ text, count }) => {
+const Statistics = ({ text, count }) => {
   return <p>{text} {count}</p>
 } 
 
@@ -25,12 +25,12 @@ const App = () => {
       <Button onClick={giveNeutralFeedback} text="neutral" />
       <Button onClick={giveBadFeedback} text="bad" />
       <h1>statistics</h1>
-      <Display text="good" count={good} />
-      <Display text="neutral" count={neutral} />
-      <Display text="bad" count={bad} />
-      <Display text="all" count={total} />
-      <Display text="average" count={(good-bad)/total} />
-      <Display text="positive" count={100*(good/total) + " %"} />
+      <Statistics text="good" count={good} />
+      <Statistics text="neutral" count={neutral} />
+      <Statistics text="bad" count={bad} />
+      <Statistics text="all" count={total} />
+      <Statistics text="average" count={(good-bad)/total} />
+      <Statistics text="positive" count={100*(good/total) + " %"} />
     </div>
   )
 }
