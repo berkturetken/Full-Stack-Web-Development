@@ -1,8 +1,7 @@
 // Single Country component
 
-const SingleCountry = ({ countriesToShow }) => {
-  console.log(countriesToShow[0])
-  const country = countriesToShow[0];
+const SingleCountry = ({ countryToShow }) => {
+  const country = countryToShow[0];
   return (
     <>
       <h1>{country.name.common}</h1>

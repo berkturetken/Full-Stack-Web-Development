@@ -11,6 +11,10 @@ const App = () => {
     setFilteredCountryName(event.target.value);
   };
 
+  const handleCountryView = (countryName) => {
+    setFilteredCountryName(countryName);
+  };
+
   useEffect(() => {
     axios.get("https://restcountries.com/v3.1/all").then((response) => {
       setCountries(response.data);
@@ -32,9 +36,7 @@ const App = () => {
         filteredCountryName={filteredCountryName}
         handleCountryChange={handleCountryChange}
       />
-      <div>
-        <Result countriesToShow={countriesToShow} />
-      </div>
+      <Result countriesToShow={countriesToShow} handleCountryView={handleCountryView} />
     </div>
   );
 };

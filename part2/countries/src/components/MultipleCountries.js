@@ -1,10 +1,15 @@
 // Multiple Countries component
 
-const MultipleCountries = ({ countriesToShow }) => {
+const MultipleCountries = ({ countriesToShow, handleCountryView }) => {
   return (
     <dl>
       {countriesToShow.map((country) => (
-        <dt key={country.name.official}>{country.name.common}</dt>
+        <dt key={country.name.official}>
+          {country.name.common}{" "}
+          <button onClick={() => handleCountryView(country.name.common)}>
+            show
+          </button>
+        </dt>
       ))}
     </dl>
   );
