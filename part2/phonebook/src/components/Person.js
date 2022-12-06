@@ -1,9 +1,10 @@
 // Rendering a single person's details component
 
-const Person = ({ name, number }) => {
+const Person = ({ person, deletePerson }) => {
   return (
-    <dt key={number}>
-      {name} {number}
+    <dt key={person.number}>
+      {person.name} {person.number}{" "}
+      <button onClick={() => deletePerson(person.id)}>delete</button>
     </dt>
   );
 };

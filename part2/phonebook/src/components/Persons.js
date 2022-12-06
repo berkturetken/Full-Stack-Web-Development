@@ -2,11 +2,15 @@ import Person from "./Person";
 
 // Rendering all people from the phonebook component
 
-const Persons = ({ personsToShow }) => {
+const Persons = ({ personsToShow, deletePerson }) => {
   return (
     <dl>
       {personsToShow.map((person) => (
-        <Person key={person.number} name={person.name} number={person.number} />
+        <Person
+          key={person.number}
+          person={person}
+          deletePerson={deletePerson}
+        />
       ))}
     </dl>
   );

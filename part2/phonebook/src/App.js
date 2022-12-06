@@ -7,16 +7,23 @@ import personService from "./services/person";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+  const [filteredName, setFilteredName] = useState("");
+
+  const handleNameChange = (event) => setNewName(event.target.value);
+
+  const handleNumberChange = (event) => setNewNumber(event.target.value);
+
+  const handleFilteredNameChange = (event) => {
+    setFilteredName(event.target.value);
+  };
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
       setPersons(initialPersons);
     });
   }, []);
-
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [filteredName, setFilteredName] = useState("");
 
   const addNewPerson = (event) => {
     event.preventDefault();
@@ -44,20 +51,22 @@ const App = () => {
     }
   };
 
-  const handleNameChange = (event) => setNewName(event.target.value);
-
-  const handleNumberChange = (event) => setNewNumber(event.target.value);
-
-  const handleFilteredNameChange = (event) => {
-    setFilteredName(event.target.value);
-  };
-
   const personsToShow =
     filteredName !== ""
       ? persons.filter((person) =>
           person.name.toLowerCase().includes(filteredName.toLowerCase())
         )
       : persons;
+
+  const deletePerson = (personId) => {
+    const personName = persons.find((person) => person.id === personId).name;
+    const isDeleteConfirmed = window.confirm(`Delete ${personName} ?`);
+    if (isDeleteConfirmed) {
+      personService.deletePerson(personId).then(() => {
+        setPersons(persons.filter((person) => person.id !== personId));
+      });
+    }
+  };
 
   return (
     <div>
@@ -80,7 +89,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} deletePerson={deletePerson} />
     </div>
   );
 };
