@@ -36,13 +36,27 @@ const App = () => {
     });
 
     if (isUserExist) {
-      alert(`${newName} is already added to phonebook`);
+      const person = persons.find((p) => p.name === newName);
+      const changedPerson = { ...person, number: newNumber };
+
+      const isChangeConfirmed = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      );
+
+      if (isChangeConfirmed) {
+        personService
+          .updatePhoneNumber(person.id, changedPerson)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((p) => (p.name === newName ? returnedPerson : p))
+            );
+          });
+      }
     } else {
       const newPerson = {
         name: newName,
         number: newNumber,
       };
-
       personService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
         setNewName("");
