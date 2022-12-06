@@ -1,6 +1,6 @@
-const Success = ({ message }) => {
-  const successMessageStyle = {
-    color: "green",
+const Error = ({ message }) => {
+  const errorMessageStyle = {
+    color: "red",
     background: "lightgrey",
     fontSize: 20,
     borderStyle: "solid",
@@ -13,7 +13,7 @@ const Success = ({ message }) => {
     return null;
   }
 
-  return <div style={successMessageStyle}>{message}</div>;
+  return <div style={errorMessageStyle}>{message}</div>;
 };
 
-export default Success;
+export default Error;

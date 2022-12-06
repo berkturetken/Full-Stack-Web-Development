@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import personService from "./services/person";
 import Success from "./components/Success";
+import Error from "./components/Error";
+
+import personService from "./services/person";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,6 +14,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filteredName, setFilteredName] = useState("");
   const [successMesssage, setSuccessMesssage] = useState(null);
+  const [errorMesssage, setErrorMesssage] = useState(null);
 
   const handleNameChange = (event) => setNewName(event.target.value);
 
@@ -21,9 +25,18 @@ const App = () => {
   };
 
   useEffect(() => {
-    personService.getAll().then((initialPersons) => {
-      setPersons(initialPersons);
-    });
+    personService
+      .getAll()
+      .then((initialPersons) => {
+        setPersons(initialPersons);
+      })
+      .catch((error) => {
+        setErrorMesssage(`Something went wrong while getting persons`);
+        // Let error message lasts for 3 seconds
+        setTimeout(() => {
+          setErrorMesssage(null);
+        }, 3000);
+      });
   }, []);
 
   const addNewPerson = (event) => {
@@ -57,6 +70,15 @@ const App = () => {
             setTimeout(() => {
               setSuccessMesssage(null);
             }, 3000);
+          })
+          .catch((error) => {
+            setErrorMesssage(
+              `Information of ${newName} has already been removed from server`
+            );
+            // Let error message lasts for 3 seconds
+            setTimeout(() => {
+              setErrorMesssage(null);
+            }, 3000);
           });
       }
     } else {
@@ -64,15 +86,24 @@ const App = () => {
         name: newName,
         number: newNumber,
       };
-      personService.create(newPerson).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
+      personService
+        .create(newPerson)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
 
-        setSuccessMesssage(`Added ${newName}`);
-        // Let success message lasts for 3 seconds
-        setTimeout(() => {
-          setSuccessMesssage(null);
-        }, 3000);
-      });
+          setSuccessMesssage(`Added ${newName}`);
+          // Let success message lasts for 3 seconds
+          setTimeout(() => {
+            setSuccessMesssage(null);
+          }, 3000);
+        })
+        .catch((error) => {
+          setErrorMesssage(`Something went wrong while adding ${newName}`);
+          // Let error message lasts for 3 seconds
+          setTimeout(() => {
+            setErrorMesssage(null);
+          }, 3000);
+        });
     }
     setNewName("");
     setNewNumber("");
@@ -89,9 +120,18 @@ const App = () => {
     const personName = persons.find((person) => person.id === personId).name;
     const isDeleteConfirmed = window.confirm(`Delete ${personName} ?`);
     if (isDeleteConfirmed) {
-      personService.deletePerson(personId).then(() => {
-        setPersons(persons.filter((person) => person.id !== personId));
-      });
+      personService
+        .deletePerson(personId)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== personId));
+        })
+        .catch((error) => {
+          setErrorMesssage(`Something went wrong while deleting ${personName}`);
+          // Let error message lasts for 3 seconds
+          setTimeout(() => {
+            setErrorMesssage(null);
+          }, 3000);
+        });
     }
   };
 
@@ -100,6 +140,7 @@ const App = () => {
       <h2>Phonebook</h2>
 
       <Success message={successMesssage} />
+      <Error message={errorMesssage} />
 
       <Filter
         filteredName={filteredName}
