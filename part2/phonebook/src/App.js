@@ -6,10 +6,22 @@ const App = () => {
 
   const addNewPerson = (event) => {
     event.preventDefault();
-    const newPerson = {
-      name: newName,
-    };
-    setPersons(persons.concat(newPerson));
+
+    const isUserExist = persons.some((person) => {
+      if (person.name === newName) {
+        return true;
+      }
+      return false;
+    });
+
+    if (isUserExist) {
+      alert(`${newName} is already added to phonebook`);
+    } else {
+      const newPerson = {
+        name: newName,
+      };
+      setPersons(persons.concat(newPerson));
+    }
     setNewName("");
   };
 
@@ -27,9 +39,11 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person) => (
-        <p key={person.name}>{person.name}</p>
-      ))}
+      <dl>
+        {persons.map((person) => (
+          <dt key={person.name}>{person.name}</dt>
+        ))}
+      </dl>
     </div>
   );
 };
