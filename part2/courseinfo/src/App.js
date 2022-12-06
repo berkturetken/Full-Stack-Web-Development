@@ -1,40 +1,6 @@
 import React from "react";
-
-const Part = ({ coursePart }) => (
-  <p>
-    {coursePart.name} {coursePart.exercises}
-  </p>
-);
-
-const Content = ({ courseParts }) => {
-  return (
-    <>
-      {courseParts.map((coursePart) => (
-        <Part key={coursePart.id} coursePart={coursePart} />
-      ))}
-    </>
-  );
-};
-
-const Header = ({ courseName }) => <h1>{courseName}</h1>;
-
-const Course = ({ course }) => {
-  return (
-    <>
-      <Header courseName={course.name} />
-      <Content courseParts={course.parts} />
-    </>
-  );
-};
-
-const Sum = ({ course }) => {
-  const initialValue = 0;
-  const sum = course.parts.reduce(
-    (sum, coursePart) => sum + coursePart.exercises,
-    initialValue
-  );
-  return <b>total of {sum} exercises</b>;
-};
+import Course from "./components/Course";
+import Sum from "./components/Sum";
 
 const App = () => {
   const courses = [
