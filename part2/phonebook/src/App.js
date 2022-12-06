@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import axios from "axios";
 import personService from "./services/person";
+import Success from "./components/Success";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filteredName, setFilteredName] = useState("");
+  const [successMesssage, setSuccessMesssage] = useState(null);
 
   const handleNameChange = (event) => setNewName(event.target.value);
 
@@ -50,6 +51,12 @@ const App = () => {
             setPersons(
               persons.map((p) => (p.name === newName ? returnedPerson : p))
             );
+
+            setSuccessMesssage(`Updated ${newName}'s phone number`);
+            // Let success message lasts for 3 seconds
+            setTimeout(() => {
+              setSuccessMesssage(null);
+            }, 3000);
           });
       }
     } else {
@@ -59,10 +66,16 @@ const App = () => {
       };
       personService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
+
+        setSuccessMesssage(`Added ${newName}`);
+        // Let success message lasts for 3 seconds
+        setTimeout(() => {
+          setSuccessMesssage(null);
+        }, 3000);
       });
     }
+    setNewName("");
+    setNewNumber("");
   };
 
   const personsToShow =
@@ -85,6 +98,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Success message={successMesssage} />
 
       <Filter
         filteredName={filteredName}
