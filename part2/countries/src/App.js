@@ -36,7 +36,10 @@ const App = () => {
         filteredCountryName={filteredCountryName}
         handleCountryChange={handleCountryChange}
       />
-      <Result countriesToShow={countriesToShow} handleCountryView={handleCountryView} />
+      <Result
+        countriesToShow={countriesToShow}
+        handleCountryView={handleCountryView}
+      />
     </div>
   );
 };
