@@ -58,6 +58,7 @@ const App = () => {
       );
 
       if (isChangeConfirmed) {
+        // Already added the feature below which is required for exercise 3.17
         personService
           .updatePhoneNumber(person.id, changedPerson)
           .then((returnedPerson) => {
@@ -98,7 +99,8 @@ const App = () => {
           }, 3000);
         })
         .catch((error) => {
-          setErrorMesssage(`Something went wrong while adding ${newName}`);
+          console.log(error.response.data.error);
+          setErrorMesssage(error.response.data.error);
           // Let error message lasts for 3 seconds
           setTimeout(() => {
             setErrorMesssage(null);
