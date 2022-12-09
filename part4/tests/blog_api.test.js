@@ -70,6 +70,40 @@ test('apiTest - blog without likes can be added by setting the likes to 0', asyn
   expect(response.body.likes).toBe(0)
 })
 
+test('apiTest - blog without title can not be added', async () => {
+  const newBlog = {
+    author: 'Xyz',
+    url: 'https://www.google.com/',
+    likes: 4,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.notesInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test('apiTest - blog without url can not be added', async () => {
+  const newBlog = {
+    title: 'A totally new book',
+    author: 'Berk',
+    likes: 25,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.notesInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
