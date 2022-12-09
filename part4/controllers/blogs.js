@@ -11,6 +11,19 @@ blogRouter.get('/', async (request, response, next) => {
   }
 })
 
+blogRouter.get('/:id', async (request, response, next) => {
+  try {
+    const note = await Blog.findById(request.params.id)
+    if (note) {
+      response.json(note.toJSON())
+    } else {
+      response.status(404).end()
+    }
+  } catch (exception) {
+    next(exception)
+  }
+})
+
 // Add a new blog
 blogRouter.post('/', async (request, response, next) => {
   try {
@@ -31,8 +44,37 @@ blogRouter.post('/', async (request, response, next) => {
 // Delete a blog
 blogRouter.delete('/:id', async (request, response, next) => {
   try {
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
+    const deletedBlog = await Blog.findByIdAndRemove(request.params.id)
+    if (deletedBlog) {
+      response.status(204).end()
+    } else {
+      response.status(404).end()
+    }
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+// Update a blog
+blogRouter.put('/:id', async (request, response, next) => {
+  const body = request.body
+
+  const blog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+  }
+
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+      new: true,
+    })
+    if (updatedBlog) {
+      response.json(updatedBlog)
+    } else {
+      response.status(404).end()
+    }
   } catch (exception) {
     next(exception)
   }
