@@ -104,6 +104,21 @@ test('apiTest - blog without url can not be added', async () => {
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
+describe('deletion of a blog', () => {
+  test('apiTest - succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.notesInDb()
+    const blogsToBeDeleted = blogsAtStart[0]
+
+    await api.delete(`/api/blogs/${blogsToBeDeleted._id}`).expect(204)
+
+    const blogsAtEnd = await helper.notesInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+    const contents = blogsAtEnd.map((r) => r.title)
+    expect(contents).not.toContain(blogsToBeDeleted.title)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
