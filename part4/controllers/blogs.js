@@ -1,7 +1,5 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
-const jwt = require('jsonwebtoken')
 
 // Retrieve a blog
 blogRouter.get('/', async (request, response, next) => {
@@ -35,13 +33,7 @@ blogRouter.post('/', async (request, response, next) => {
       })
     } else {
       const body = request.body
-
-      const decodedToken = jwt.verify(request.token, process.env.SECRET)
-      if (!decodedToken.id) {
-        return response.status(401).json({ error: 'token missing or invalid' })
-      }
-
-      const user = await User.findById(decodedToken.id)
+      const user = request.user
 
       const blog = new Blog({
         title: body.title,
@@ -63,15 +55,13 @@ blogRouter.post('/', async (request, response, next) => {
 // Delete a blog
 blogRouter.delete('/:id', async (request, response, next) => {
   try {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: 'token missing or invalid' })
-    }
-
+    const user = request.user
     const blog = await Blog.findById(request.params.id)
-    const user = await User.findById(decodedToken.id)
+    // const user = await User.findById(decodedToken.id)
     if (blog.user.toString() !== user._id.toString()) {
-      return response.status(401).json({ error: 'you are not authorized to delete this blog' })
+      return response
+        .status(401)
+        .json({ error: 'you are not authorized to delete this blog' })
     }
 
     const deletedBlog = await Blog.findByIdAndRemove(request.params.id)

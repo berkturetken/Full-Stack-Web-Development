@@ -27,8 +27,15 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
 
+/*
+3 options to register a middleware:
+  1) Register for all the routes: app.use(middleware.userExtractor)
+  2) Register for a specific set of routes: app.use('/api/blogs', middleware.userExtractor, blogRouter)
+  3) Register only for a specific function (inside controllers/blogs.js): router.post('/', userExtractor, async (req, res) => {})
+*/
+
 app.use('/api/login', loginRouter)
-app.use('/api/blogs', blogRouter)
+app.use('/api/blogs', middleware.userExtractor, blogRouter)
 app.use('/api/users', usersRouter)
 
 app.use(middleware.unknownEndpoint)
