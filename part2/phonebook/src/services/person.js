@@ -1,5 +1,8 @@
 import axios from "axios";
+// For development
 const baseUrl = "http://localhost:8080/api/persons";
+// For production
+// const baseUrl =  "https://proud-dream-269.fly.dev/api/persons"
 
 // GET
 const getAll = () => {
