@@ -79,7 +79,7 @@ const App = () => {
     }
   }
 
-  const logingForm = () => {
+  const loginForm = () => {
     return (
       <form onSubmit={handleLogin}>
         <div>
@@ -107,36 +107,39 @@ const App = () => {
 
   const blogForm = () => {
     return (
-      <form onSubmit={addBlog}>
-        <div>
-          title:
-          <input
-            type="text"
-            value={title}
-            name="title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-            type="text"
-            value={author}
-            name="author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
+      <div>
+        <h2>create new</h2>
+        <form onSubmit={addBlog}>
+          <div>
+            title:
+            <input
+              type="text"
+              value={title}
+              name="title"
+              onChange={({ target }) => setTitle(target.value)}
+            />
+          </div>
+          <div>
+            author:
+            <input
+              type="text"
+              value={author}
+              name="author"
+              onChange={({ target }) => setAuthor(target.value)}
+            />
+          </div>
+          <div>
+            url:
+            <input
+              type="text"
+              value={url}
+              name="url"
+              onChange={({ target }) => setUrl(target.value)}
+            />
+          </div>
+          <button type="submit">create</button>
+        </form>
+      </div>
     )
   }
 
@@ -148,19 +151,20 @@ const App = () => {
 
   return (
     <>
-      <h2>blogs</h2>
-      <Notification message={message} isError={isError} />
-
       {user === null ? (
         <div>
           <h2>Log in to application</h2>
-          {logingForm()}
+          <Notification message={message} isError={isError} />
+          {loginForm()}
         </div>
       ) : (
         <div>
+          <h2>blogs</h2>
+          <Notification message={message} isError={isError} />
           <p>
             {user.name} logged in <button onClick={logout}>logout</button>
           </p>
+          {blogForm()}
           <ol>
             {blogs.map((blog) => (
               <li key={blog._id}>
@@ -168,7 +172,6 @@ const App = () => {
               </li>
             ))}
           </ol>
-          {blogForm()}
         </div>
       )}
     </>
