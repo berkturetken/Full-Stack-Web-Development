@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -79,32 +81,6 @@ const App = () => {
     }
   }
 
-  const loginForm = () => {
-    return (
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    )
-  }
-
   const blogForm = () => {
     return (
       <div>
@@ -155,7 +131,13 @@ const App = () => {
         <div>
           <h2>Log in to application</h2>
           <Notification message={message} isError={isError} />
-          {loginForm()}
+          <LoginForm
+            handleLogin={handleLogin}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            username={username}
+            password={password}
+          />
         </div>
       ) : (
         <div>
@@ -164,7 +146,7 @@ const App = () => {
           <p>
             {user.name} logged in <button onClick={logout}>logout</button>
           </p>
-          {blogForm()}
+          <Togglable buttonLabel="new note">{blogForm()}</Togglable>
           <ol>
             {blogs.map((blog) => (
               <li key={blog._id}>
