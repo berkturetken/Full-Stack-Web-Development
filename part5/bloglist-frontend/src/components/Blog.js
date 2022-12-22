@@ -1,9 +1,7 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ user, blog, updateBlog, removeBlog }) => {
   const [visible, setVisible] = useState(false)
-  // To be able to change the like number without refreshing the page
-  const [likes, setLikes] = useState(blog.likes)
 
   const [viewHideButton, setViewHideButton] = useState('view')
   const showDetails = { display: visible ? '' : 'none' }
@@ -21,13 +19,18 @@ const Blog = ({ blog, updateBlog }) => {
     marginBottom: 5,
   }
 
-  const handleLikes = (event) => {
-    event.preventDefault()
-    setLikes(blog.likes + 1)
+  const handleLikes = () => {
     updateBlog(blog._id, {
       ...blog,
-      likes: likes,
+      likes: blog.likes + 1,
     })
+  }
+
+  const handleRemove = () => {
+    console.log('clicked remove')
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      removeBlog(blog._id)
+    }
   }
 
   return (
@@ -40,10 +43,15 @@ const Blog = ({ blog, updateBlog }) => {
       <div style={showDetails}>
         <p>{blog.url}</p>
         <p>
-          likes {likes}
+          likes {blog.likes}
           <button onClick={handleLikes}>like</button>
         </p>
         <p>{blog.user.name}</p>
+        {user.username === blog.user.username ? (
+          <button onClick={handleRemove}>remove</button>
+        ) : (
+          ''
+        )}
       </div>
     </div>
   )

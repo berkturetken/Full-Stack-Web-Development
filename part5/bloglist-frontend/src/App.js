@@ -79,12 +79,11 @@ const App = () => {
   }
 
   const updateBlog = async (blogId, blogObject) => {
-    blogFormRef.current.toggleVisibility()
     try {
       await blogService.update(blogId, blogObject)
       setBlogs(
         blogs.map((currBlog) =>
-          currBlog.id === blogId ? blogObject : currBlog
+          currBlog._id === blogId ? blogObject : currBlog
         )
       )
       setMessage(
@@ -96,6 +95,24 @@ const App = () => {
       }, 3000)
     } catch (exception) {
       setMessage('the like could not be increased')
+      setIsError(true)
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000)
+    }
+  }
+
+  const removeBlog = async (blogId) => {
+    try {
+      await blogService.remove(blogId)
+      setBlogs(blogs.filter((currBlog) => currBlog._id !== blogId))
+      setMessage('deleted successfully')
+      setIsError(false)
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000)
+    } catch (exception) {
+      setMessage('blog could not be deleted')
       setIsError(true)
       setTimeout(() => {
         setMessage(null)
@@ -150,7 +167,13 @@ const App = () => {
             {blogs.sort(compareBlogLikes) &&
               blogs.map((blog) => (
                 <li key={blog._id}>
-                  <Blog key={blog._id} blog={blog} updateBlog={updateBlog} />
+                  <Blog
+                    key={blog._id}
+                    user={user}
+                    blog={blog}
+                    updateBlog={updateBlog}
+                    removeBlog={removeBlog}
+                  />
                 </li>
               ))}
           </ol>
