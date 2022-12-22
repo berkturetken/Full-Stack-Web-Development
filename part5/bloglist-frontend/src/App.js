@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -9,16 +9,18 @@ import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [message, setMessage] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  const [message, setMessage] = useState(null)
   const [isError, setIsError] = useState(false)
+
+  const [user, setUser] = useState(null)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const blogFormRef = useRef()
 
   // For retrieving all blogs
   useEffect(() => {
@@ -53,15 +55,9 @@ const App = () => {
     }
   }
 
-  const addBlog = (event) => {
-    event.preventDefault()
+  const addBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     try {
-      const blogObject = {
-        title: title,
-        author: author,
-        url: url,
-      }
-
       blogService.create(blogObject).then((returnedBlog) => {
         setBlogs(blogs.concat(returnedBlog))
         setMessage(`a new blog ${title} by ${author} added`)
@@ -109,15 +105,15 @@ const App = () => {
           <p>
             {user.name} logged in <button onClick={logout}>logout</button>
           </p>
-          <Togglable buttonLabel="new note">
+          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <BlogForm
+              createBlog={addBlog}
               title={title}
-              author={author}
-              url={url}
               handleTitleChange={({ target }) => setTitle(target.value)}
+              author={author}
               handleAuthorChange={({ target }) => setAuthor(target.value)}
+              url={url}
               handleUrlChange={({ target }) => setUrl(target.value)}
-              addBlog={addBlog}
             />
           </Togglable>
           <ol>

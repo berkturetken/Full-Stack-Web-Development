@@ -1,12 +1,21 @@
 const BlogForm = ({
+  createBlog,
   title,
-  author,
-  url,
   handleTitleChange,
+  author,
   handleAuthorChange,
+  url,
   handleUrlChange,
-  addBlog,
 }) => {
+  const addBlog = (event) => {
+    event.preventDefault()
+    createBlog({
+      title: title,
+      author: author,
+      url: url,
+    })
+  }
+
   return (
     <div>
       <h2>create new</h2>
