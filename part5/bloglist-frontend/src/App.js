@@ -67,10 +67,35 @@ const App = () => {
         setUrl('')
         setTimeout(() => {
           setMessage(null)
-        }, 5000)
+        }, 3000)
       })
     } catch (exception) {
       setMessage('blog could not be added')
+      setIsError(true)
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000)
+    }
+  }
+
+  const updateBlog = async (blogId, blogObject) => {
+    blogFormRef.current.toggleVisibility()
+    try {
+      await blogService.update(blogId, blogObject)
+      setBlogs(
+        blogs.map((currBlog) =>
+          currBlog.id === blogId ? blogObject : currBlog
+        )
+      )
+      setMessage(
+        `increased the like of blog ${blogObject.title} by ${blogObject.author}`
+      )
+      setIsError(false)
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000)
+    } catch (exception) {
+      setMessage('the like could not be increased')
       setIsError(true)
       setTimeout(() => {
         setMessage(null)
@@ -119,7 +144,7 @@ const App = () => {
           <ol>
             {blogs.map((blog) => (
               <li key={blog._id}>
-                <Blog key={blog._id} blog={blog} />
+                <Blog key={blog._id} blog={blog} updateBlog={updateBlog} />
               </li>
             ))}
           </ol>

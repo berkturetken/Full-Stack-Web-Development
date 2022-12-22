@@ -1,7 +1,10 @@
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [visible, setVisible] = useState(false)
+  // To be able to change the like number without refreshing the page
+  const [likes, setLikes] = useState(blog.likes)
+
   const [viewHideButton, setViewHideButton] = useState('view')
   const showDetails = { display: visible ? '' : 'none' }
 
@@ -18,6 +21,15 @@ const Blog = ({ blog }) => {
     marginBottom: 5,
   }
 
+  const handleLikes = (event) => {
+    event.preventDefault()
+    setLikes(blog.likes + 1)
+    updateBlog(blog._id, {
+      ...blog,
+      likes: likes,
+    })
+  }
+
   return (
     <div style={blogStyle}>
       <div>
@@ -28,8 +40,8 @@ const Blog = ({ blog }) => {
       <div style={showDetails}>
         <p>{blog.url}</p>
         <p>
-          likes {blog.likes}
-          <button>like</button>
+          likes {likes}
+          <button onClick={handleLikes}>like</button>
         </p>
         <p>{blog.user.name}</p>
       </div>
