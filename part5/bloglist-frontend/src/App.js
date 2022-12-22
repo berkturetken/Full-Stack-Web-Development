@@ -109,6 +109,10 @@ const App = () => {
     setUser(null)
   }
 
+  const compareBlogLikes = (b1, b2) => {
+    return b2.likes - b1.likes
+  }
+
   return (
     <>
       {user === null ? (
@@ -142,11 +146,13 @@ const App = () => {
             />
           </Togglable>
           <ol>
-            {blogs.map((blog) => (
-              <li key={blog._id}>
-                <Blog key={blog._id} blog={blog} updateBlog={updateBlog} />
-              </li>
-            ))}
+            {/* Note: sort() method returns the reference to the same array with the sorted version */}
+            {blogs.sort(compareBlogLikes) &&
+              blogs.map((blog) => (
+                <li key={blog._id}>
+                  <Blog key={blog._id} blog={blog} updateBlog={updateBlog} />
+                </li>
+              ))}
           </ol>
         </div>
       )}
