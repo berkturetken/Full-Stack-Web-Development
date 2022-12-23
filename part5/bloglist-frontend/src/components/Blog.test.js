@@ -53,3 +53,32 @@ test('after clicking the button, url and likes are displayed', async () => {
   const urlLikesDiv = component.getByTestId('urlLikes')
   expect(urlLikesDiv).not.toHaveStyle('display: none')
 })
+
+test('like button is clicked twice', async () => {
+  const blog = {
+    title: 'automated test title',
+    author: 'automated test author',
+    likes: 10,
+    url: 'https://www.google.com/',
+    user: {
+      name: 'berk türetken',
+      username: 'turetkenb',
+    },
+  }
+
+  const user = userEvent.setup()
+
+  const mockHandler = jest.fn()
+  const component = render(
+    <Blog blog={blog} user={user} updateBlog={mockHandler} />
+  )
+
+  const viewHideButton = component.getByTestId('viewHideButton')
+  await user.click(viewHideButton)
+
+  const likeButton = component.getByTestId('likeButton')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})

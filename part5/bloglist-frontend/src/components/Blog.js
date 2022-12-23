@@ -43,10 +43,12 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
       </div>
 
       <div style={showDetails} data-testid="urlLikes">
-        <p data-testid="url">{blog.url}</p>
-        <p data-testid="likes">
+        <p>{blog.url}</p>
+        <p>
           likes {blog.likes}
-          <button onClick={handleLikes}>like</button>
+          <button onClick={handleLikes} data-testid="likeButton">
+            like
+          </button>
         </p>
         <p>{blog.user.name}</p>
         {user.username === blog.user.username ? (
