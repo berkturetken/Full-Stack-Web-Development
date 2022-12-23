@@ -9,9 +9,6 @@ import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   const [message, setMessage] = useState(null)
   const [isError, setIsError] = useState(false)
@@ -60,11 +57,10 @@ const App = () => {
     try {
       blogService.create(blogObject).then((returnedBlog) => {
         setBlogs(blogs.concat(returnedBlog))
-        setMessage(`a new blog ${title} by ${author} added`)
+        setMessage(
+          `a new blog ${blogObject.title} by ${blogObject.author} added`
+        )
         setIsError(false)
-        setTitle('')
-        setAuthor('')
-        setUrl('')
         setTimeout(() => {
           setMessage(null)
         }, 3000)
@@ -152,15 +148,7 @@ const App = () => {
             {user.name} logged in <button onClick={logout}>logout</button>
           </p>
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm
-              createBlog={addBlog}
-              title={title}
-              handleTitleChange={({ target }) => setTitle(target.value)}
-              author={author}
-              handleAuthorChange={({ target }) => setAuthor(target.value)}
-              url={url}
-              handleUrlChange={({ target }) => setUrl(target.value)}
-            />
+            <BlogForm createBlog={addBlog} />
           </Togglable>
           <ol>
             {/* Note: sort() method returns the reference to the same array with the sorted version */}
