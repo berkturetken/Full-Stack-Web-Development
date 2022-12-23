@@ -35,14 +35,16 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
 
   return (
     <div style={blogStyle}>
-      <div data-testid='titleAuthor'>
+      <div data-testid="titleAuthor">
         {blog.title}, {blog.author}
-        <button onClick={toggle}>{viewHideButton}</button>
+        <button onClick={toggle} data-testid="viewHideButton">
+          {viewHideButton}
+        </button>
       </div>
 
-      <div style={showDetails} data-testid='urlLikes'>
-        <p data-testid='url'>{blog.url}</p>
-        <p data-testid='likes'>
+      <div style={showDetails} data-testid="urlLikes">
+        <p data-testid="url">{blog.url}</p>
+        <p data-testid="likes">
           likes {blog.likes}
           <button onClick={handleLikes}>like</button>
         </p>
