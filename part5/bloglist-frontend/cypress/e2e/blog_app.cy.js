@@ -37,7 +37,7 @@ describe('Blog app', function () {
     const newBlog = {
       title: 'Learn Cypress',
       author: 'Cypress',
-      url: 'dummy url'
+      url: 'dummy url',
     }
     beforeEach(function () {
       cy.login({ username: 'cypressTest', password: 'cypress' })
@@ -53,12 +53,30 @@ describe('Blog app', function () {
     })
 
     it('A user can like a blog', function () {
-      cy.createBlog({ title: newBlog.title, author: newBlog.author, url: newBlog.url })
+      cy.createBlog({
+        title: newBlog.title,
+        author: newBlog.author,
+        url: newBlog.url,
+      })
       cy.get('#viewHideButton').click()
       cy.contains(0)
       cy.get('#likeButton').click()
       cy.contains(1)
-      cy.contains('increased the like of blog ' + newBlog.title + ' by ' + newBlog.author)
+      cy.contains(
+        'increased the like of blog ' + newBlog.title + ' by ' + newBlog.author
+      )
+    })
+
+    it('A user can delete a blog', function () {
+      cy.createBlog({
+        title: newBlog.title,
+        author: newBlog.author,
+        url: newBlog.url,
+      })
+      cy.get('#viewHideButton').click()
+      cy.get('#removeButton').click()
+      cy.on('windows:confirm', () => true)
+      cy.get('html').should('not.contain', newBlog.title)
     })
   })
 })

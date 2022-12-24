@@ -60,7 +60,9 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
         </p>
         <p>{blog.user.name}</p>
         {user.username === blog.user.username ? (
-          <button onClick={handleRemove}>remove</button>
+          <button id="removeButton" onClick={handleRemove}>
+            remove
+          </button>
         ) : (
           ''
         )}
