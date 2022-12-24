@@ -34,17 +34,31 @@ describe('Blog app', function () {
   })
 
   describe('When logged in', function () {
+    const newBlog = {
+      title: 'Learn Cypress',
+      author: 'Cypress',
+      url: 'dummy url'
+    }
     beforeEach(function () {
       cy.login({ username: 'cypressTest', password: 'cypress' })
     })
 
     it('A blog can be created', function () {
       cy.contains('create new blog').click()
-      cy.get('#title').type('Learn Cypress')
-      cy.get('#author').type('Cypress')
-      cy.get('#url').type('dummy url')
+      cy.get('#title').type(newBlog.title)
+      cy.get('#author').type(newBlog.author)
+      cy.get('#url').type(newBlog.url)
       cy.get('#createButton').click()
-      cy.contains('Learn Cypress')
+      cy.contains(newBlog.title)
+    })
+
+    it('A user can like a blog', function () {
+      cy.createBlog({ title: newBlog.title, author: newBlog.author, url: newBlog.url })
+      cy.get('#viewHideButton').click()
+      cy.contains(0)
+      cy.get('#likeButton').click()
+      cy.contains(1)
+      cy.contains('increased the like of blog ' + newBlog.title + ' by ' + newBlog.author)
     })
   })
 })
