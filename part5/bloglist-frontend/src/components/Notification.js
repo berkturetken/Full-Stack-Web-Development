@@ -24,7 +24,10 @@ const Notification = ({ message, isError }) => {
   }
 
   return (
-    <div style={isError ? errorMessageStyle : successMessageStyle}>
+    <div
+      style={isError ? errorMessageStyle : successMessageStyle}
+      className="error"
+    >
       {message}
     </div>
   )
