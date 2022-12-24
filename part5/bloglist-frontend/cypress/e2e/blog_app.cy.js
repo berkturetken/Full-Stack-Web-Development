@@ -78,5 +78,29 @@ describe('Blog app', function () {
       cy.on('windows:confirm', () => true)
       cy.get('html').should('not.contain', newBlog.title)
     })
+
+    it.only('Blogs are ordered according to their likes (most likes being first)', function () {
+      // Create 3 dummy blogs
+      cy.createBlog({
+        title: newBlog.title,
+        author: newBlog.author,
+        url: newBlog.url,
+      })
+      cy.createBlog({
+        title: 'A Search Engine',
+        author: 'Google',
+        url: 'google.com',
+        likes: 4,
+      })
+      cy.createBlog({
+        title: 'A Good Laptop',
+        author: 'Dell',
+        url: 'test.com',
+        likes: 5,
+      })
+      cy.get('.blog').eq(0).should('contain', 'A Good Laptop')
+      cy.get('.blog').eq(1).should('contain', 'A Search Engine')
+      cy.get('.blog').eq(2).should('contain', newBlog.title)
+    })
   })
 })
