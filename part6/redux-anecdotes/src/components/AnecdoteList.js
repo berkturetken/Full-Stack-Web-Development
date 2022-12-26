@@ -3,7 +3,8 @@ import { incrementVote } from '../reducers/anecdoteReducer'
 
 
 const AnecdoteList = (props) => {
-    const anecdotes = useSelector(state => state)
+    const items = useSelector(state => state.anecdotes)
+    const anecdotes = [...items]
     const dispatch = useDispatch()
 
     const vote = (id) => {
@@ -16,17 +17,17 @@ const AnecdoteList = (props) => {
     }
 
     return (
-        anecdotes.sort(compareAnecdoteVotes) && anecdotes.map(anecdote =>
-            <div key={anecdote.id}>
-              <div>
-                {anecdote.content}
-              </div>
-              <div>
-                has {anecdote.votes}
-                <button onClick={() => vote(anecdote.id)}>vote</button>
-              </div>
-            </div>
-        )
+      anecdotes.sort(compareAnecdoteVotes) && anecdotes.map(anecdote =>
+        <div key={anecdote.id}>
+          <div>
+            {anecdote.content}
+          </div>
+          <div>
+            has {anecdote.votes}
+            <button onClick={() => vote(anecdote.id)}>vote</button>
+          </div>
+        </div>
+      )
     )
 }
 
