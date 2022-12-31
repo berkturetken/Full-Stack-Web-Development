@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { Route, Routes, Link, useMatch } from 'react-router-dom'
+import { Route, Routes, Link, useMatch, useNavigate } from 'react-router-dom'
 
 const Anecdote = ({ anecdote }) => {
   return (
     <div>
-      <h2>{anecdote.content} by {anecdote.author}</h2>
+      <h2>
+        {anecdote.content} by {anecdote.author}
+      </h2>
       <p>has {anecdote.votes} votes</p>
       <p>
         for more info see <a href={anecdote.info}>{anecdote.info}</a>
@@ -38,7 +40,7 @@ const About = () => (
       more general than the brief tale itself, such as to characterize a person
       by delineating a specific quirk or trait, to communicate an abstract idea
       about a person, place, or thing through the concrete details of a short
-      narrative. An anecdote is "a story with a point."
+      narrative. An anecdote is &quot;a story with a point.&quot;
     </em>
 
     <p>
@@ -51,11 +53,11 @@ const About = () => (
 const Footer = () => (
   <div>
     Anecdote app for <a href="https://fullstackopen.com/">Full Stack Open</a>.
-    See
+    See{' '}
     <a href="https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js">
       https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js
     </a>
-    for the source code.
+    {' '}for the source code.
   </div>
 )
 
@@ -63,6 +65,8 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -72,6 +76,12 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     })
+    navigate('/')
+    const message = 'a new anecdote ' + content + ' created!'
+    props.setNotification(message)
+    setTimeout(() => {
+      props.setNotification(null)
+    }, 3000)
   }
 
   return (
@@ -108,6 +118,14 @@ const CreateNew = (props) => {
   )
 }
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return <p>{message}</p>
+}
+
 const App = () => {
   const padding = {
     paddingRight: 5,
@@ -139,6 +157,7 @@ const App = () => {
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id)
 
+  /*
   const vote = (id) => {
     const anecdote = anecdoteById(id)
 
@@ -149,6 +168,7 @@ const App = () => {
 
     setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)))
   }
+  */
 
   const match = useMatch('/anecdotes/:id')
 
@@ -158,7 +178,6 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <div>
-        {/* <Link style={padding} to="/">Home</Link> */}
         <Link style={padding} to="/anecdotes">
           anecdotes
         </Link>
@@ -169,6 +188,7 @@ const App = () => {
           about
         </Link>
       </div>
+      <Notification message={notification} />
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route
@@ -180,11 +200,13 @@ const App = () => {
           element={<AnecdoteList anecdotes={anecdotes} />}
         />
         <Route path="/about" element={<About />} />
-        <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        <Route
+          path="/create"
+          element={
+            <CreateNew addNew={addNew} setNotification={setNotification} />
+          }
+        />
       </Routes>
-
-      {/* <Menu /> */}
-
       <Footer />
     </div>
   )
