@@ -1,0 +1,58 @@
+{
+  "notes": [
+    {
+      "content": "custom-hooks are great",
+      "id": 1
+    },
+    {
+      "content": "the best featrure ever <3",
+      "id": 2
+    },
+    {
+      "content": "custom-hooks are awesome",
+      "id": 3
+    },
+    {
+      "content": "custom-hooks are awesome",
+      "id": 4
+    },
+    {
+      "content": "custom-hooks are awesome",
+      "id": 5
+    },
+    {
+      "content": "custom-hooks are awesome",
+      "id": 6
+    },
+    {
+      "content": "custom-hooks are awesome!",
+      "id": 7
+    },
+    {
+      "content": "hello world",
+      "id": 8
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "kaltsoon",
+      "number": "045-2323456",
+      "id": 2
+    },
+    {
+      "name": "berk türtetken",
+      "number": "532-357-87-98",
+      "id": 3
+    },
+    {
+      "name": "ata metin",
+      "number": "111-22-33",
+      "id": 4
+    }
+  ]
+}
