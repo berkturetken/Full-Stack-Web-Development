@@ -1,5 +1,9 @@
-const Notification = ({ message, isError }) => {
-  if (message === null) {
+import { useSelector } from 'react-redux'
+
+const Notification = ({ isError }) => {
+  const notification = useSelector((state) => state.notifications)
+
+  if (notification === null) {
     return null
   }
 
@@ -28,7 +32,7 @@ const Notification = ({ message, isError }) => {
       style={isError ? errorMessageStyle : successMessageStyle}
       className="error"
     >
-      {message}
+      {notification}
     </div>
   )
 }

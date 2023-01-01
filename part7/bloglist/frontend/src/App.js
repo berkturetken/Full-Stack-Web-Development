@@ -6,11 +6,17 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import { useDispatch } from 'react-redux'
+import {
+  showNotification,
+  hideNotification,
+} from './reducers/notificationReducer'
 
 const App = () => {
+  const dispatch = useDispatch()
+
   const [blogs, setBlogs] = useState([])
 
-  const [message, setMessage] = useState(null)
   const [isError, setIsError] = useState(false)
 
   const [user, setUser] = useState(null)
@@ -44,10 +50,10 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setMessage('wrong username or password')
+      dispatch(showNotification('wrong username or password'))
       setIsError(true)
       setTimeout(() => {
-        setMessage(null)
+        dispatch(hideNotification())
       }, 3000)
     }
   }
@@ -57,19 +63,21 @@ const App = () => {
     try {
       blogService.create(blogObject).then((returnedBlog) => {
         setBlogs(blogs.concat(returnedBlog))
-        setMessage(
-          `a new blog ${blogObject.title} by ${blogObject.author} added`
+        dispatch(
+          showNotification(
+            `a new blog ${blogObject.title} by ${blogObject.author} added`
+          )
         )
         setIsError(false)
         setTimeout(() => {
-          setMessage(null)
+          dispatch(hideNotification())
         }, 3000)
       })
     } catch (exception) {
-      setMessage('blog could not be added')
+      dispatch(showNotification('blog could not be added'))
       setIsError(true)
       setTimeout(() => {
-        setMessage(null)
+        dispatch(hideNotification())
       }, 3000)
     }
   }
@@ -82,18 +90,20 @@ const App = () => {
           currBlog._id === blogId ? blogObject : currBlog
         )
       )
-      setMessage(
-        `increased the like of blog ${blogObject.title} by ${blogObject.author}`
+      dispatch(
+        showNotification(
+          `increased the like of blog ${blogObject.title} by ${blogObject.author}`
+        )
       )
       setIsError(false)
       setTimeout(() => {
-        setMessage(null)
+        dispatch(hideNotification())
       }, 3000)
     } catch (exception) {
-      setMessage('the like could not be increased')
+      dispatch(showNotification('the like could not be increased'))
       setIsError(true)
       setTimeout(() => {
-        setMessage(null)
+        dispatch(hideNotification())
       }, 3000)
     }
   }
@@ -102,16 +112,16 @@ const App = () => {
     try {
       await blogService.remove(blogId)
       setBlogs(blogs.filter((currBlog) => currBlog._id !== blogId))
-      setMessage('deleted successfully')
+      dispatch(showNotification('deleted successfully'))
       setIsError(false)
       setTimeout(() => {
-        setMessage(null)
+        dispatch(hideNotification())
       }, 3000)
     } catch (exception) {
-      setMessage('blog could not be deleted')
+      dispatch(showNotification('blog could not be deleted'))
       setIsError(true)
       setTimeout(() => {
-        setMessage(null)
+        dispatch(hideNotification())
       }, 3000)
     }
   }
@@ -131,7 +141,7 @@ const App = () => {
       {user === null ? (
         <div>
           <h2>Log in to application</h2>
-          <Notification message={message} isError={isError} />
+          <Notification isError={isError} />
           <LoginForm
             handleLogin={handleLogin}
             handleUsernameChange={({ target }) => setUsername(target.value)}
@@ -143,7 +153,7 @@ const App = () => {
       ) : (
         <div>
           <h2>blogs</h2>
-          <Notification message={message} isError={isError} />
+          <Notification isError={isError} />
           <p>
             {user.name} logged in <button onClick={logout}>logout</button>
           </p>
