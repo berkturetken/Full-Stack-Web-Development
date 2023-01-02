@@ -6,16 +6,17 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   showNotification,
   hideNotification,
 } from './reducers/notificationReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-
-  const [blogs, setBlogs] = useState([])
+  const items = useSelector((state) => state.blogs)
+  const blogs = [...items]
 
   const [isError, setIsError] = useState(false)
 
@@ -27,8 +28,8 @@ const App = () => {
 
   // For retrieving all blogs
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   // For logging user
   useEffect(() => {
@@ -58,21 +59,19 @@ const App = () => {
     }
   }
 
-  const addBlog = (blogObject) => {
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
-      blogService.create(blogObject).then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog))
-        dispatch(
-          showNotification(
-            `a new blog ${blogObject.title} by ${blogObject.author} added`
-          )
+      dispatch(createBlog(blogObject))
+      dispatch(
+        showNotification(
+          `a new blog ${blogObject.title} by ${blogObject.author} added`
         )
-        setIsError(false)
-        setTimeout(() => {
-          dispatch(hideNotification())
-        }, 3000)
-      })
+      )
+      setIsError(false)
+      setTimeout(() => {
+        dispatch(hideNotification())
+      }, 3000)
     } catch (exception) {
       dispatch(showNotification('blog could not be added'))
       setIsError(true)
@@ -82,6 +81,7 @@ const App = () => {
     }
   }
 
+  /*
   const updateBlog = async (blogId, blogObject) => {
     try {
       await blogService.update(blogId, blogObject)
@@ -125,6 +125,7 @@ const App = () => {
       }, 3000)
     }
   }
+  */
 
   const logout = () => {
     console.log('logging out...')
@@ -169,8 +170,8 @@ const App = () => {
                     key={blog._id}
                     user={user}
                     blog={blog}
-                    updateBlog={updateBlog}
-                    removeBlog={removeBlog}
+                    updateBlog={null}
+                    removeBlog={null}
                   />
                 </li>
               ))}
