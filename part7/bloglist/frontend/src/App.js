@@ -11,7 +11,12 @@ import {
   showNotification,
   hideNotification,
 } from './reducers/notificationReducer'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import {
+  initializeBlogs,
+  createBlog,
+  deleteBlog,
+  incrementLike,
+} from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -81,15 +86,9 @@ const App = () => {
     }
   }
 
-  /*
-  const updateBlog = async (blogId, blogObject) => {
+  const updateBlog = async (blogObject) => {
     try {
-      await blogService.update(blogId, blogObject)
-      setBlogs(
-        blogs.map((currBlog) =>
-          currBlog._id === blogId ? blogObject : currBlog
-        )
-      )
+      dispatch(incrementLike(blogObject))
       dispatch(
         showNotification(
           `increased the like of blog ${blogObject.title} by ${blogObject.author}`
@@ -110,8 +109,7 @@ const App = () => {
 
   const removeBlog = async (blogId) => {
     try {
-      await blogService.remove(blogId)
-      setBlogs(blogs.filter((currBlog) => currBlog._id !== blogId))
+      dispatch(deleteBlog(blogId))
       dispatch(showNotification('deleted successfully'))
       setIsError(false)
       setTimeout(() => {
@@ -125,7 +123,6 @@ const App = () => {
       }, 3000)
     }
   }
-  */
 
   const logout = () => {
     console.log('logging out...')
@@ -170,8 +167,8 @@ const App = () => {
                     key={blog._id}
                     user={user}
                     blog={blog}
-                    updateBlog={null}
-                    removeBlog={null}
+                    updateBlog={updateBlog}
+                    removeBlog={removeBlog}
                   />
                 </li>
               ))}
