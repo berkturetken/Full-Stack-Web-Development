@@ -39,6 +39,16 @@ const BlogDetail = ({ user, blogs, updateBlog, removeBlog }) => {
       ) : (
         ''
       )}
+      <h3>comments</h3>
+      {blog.comments === undefined || blog.comments.length === 0 ? (
+        <p>No comment for this blog :(</p>
+      ) : (
+        <ul>
+          {blog.comments.map((comment, index) => (
+            <li key={index}>{comment}</li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
