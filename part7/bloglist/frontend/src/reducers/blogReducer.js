@@ -11,7 +11,6 @@ const blogSlice = createSlice({
     appendBlog(state, action) {
       state.push(action.payload)
     },
-    // TODO: Fix the problem of displaying no blogs after deleting a blog
     removeBlog(state, action) {
       return state.filter((blog) => blog._id !== action.payload)
     },
