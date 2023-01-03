@@ -1,11 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import { useState, useEffect } from 'react'
+import BlogList from './components/BlogList'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import Togglable from './components/Togglable'
-import BlogForm from './components/BlogForm'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   showNotification,
@@ -13,7 +11,6 @@ import {
 } from './reducers/notificationReducer'
 import {
   initializeBlogs,
-  createBlog,
   deleteBlog,
   incrementLike,
 } from './reducers/blogReducer'
@@ -21,6 +18,7 @@ import Users from './components/Users'
 import userService from './services/user'
 import { Routes, Route } from 'react-router-dom'
 import User from './components/User'
+import BlogDetail from './components/BlogDetails'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -33,8 +31,6 @@ const App = () => {
   const [users, setUsers] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
-  const blogFormRef = useRef()
 
   // For retrieving all blogs
   useEffect(() => {
@@ -60,28 +56,6 @@ const App = () => {
       setPassword('')
     } catch (exception) {
       dispatch(showNotification('wrong username or password'))
-      setIsError(true)
-      setTimeout(() => {
-        dispatch(hideNotification())
-      }, 3000)
-    }
-  }
-
-  const addBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    try {
-      dispatch(createBlog(blogObject))
-      dispatch(
-        showNotification(
-          `a new blog ${blogObject.title} by ${blogObject.author} added`
-        )
-      )
-      setIsError(false)
-      setTimeout(() => {
-        dispatch(hideNotification())
-      }, 3000)
-    } catch (exception) {
-      dispatch(showNotification('blog could not be added'))
       setIsError(true)
       setTimeout(() => {
         dispatch(hideNotification())
@@ -133,35 +107,6 @@ const App = () => {
     setUser(null)
   }
 
-  const compareBlogLikes = (b1, b2) => {
-    return b2.likes - b1.likes
-  }
-
-  const BlogList = () => {
-    return (
-      <>
-        <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} />
-        </Togglable>
-        <ol>
-          {/* Note: sort() method returns the reference to the same array with the sorted version */}
-          {blogs.sort(compareBlogLikes) &&
-            blogs.map((blog) => (
-              <li key={blog._id}>
-                <Blog
-                  key={blog._id}
-                  user={user}
-                  blog={blog}
-                  updateBlog={updateBlog}
-                  removeBlog={removeBlog}
-                />
-              </li>
-            ))}
-        </ol>
-      </>
-    )
-  }
-
   return (
     <div>
       {user === null ? (
@@ -187,9 +132,28 @@ const App = () => {
         </div>
       )}
       <Routes>
-        <Route path="/" element={<BlogList />} />
+        <Route
+          path="/"
+          element={
+            <BlogList
+              blogs={blogs}
+              handleIsError={({ val }) => setIsError(val)} // TODO: Fix here
+            />
+          }
+        />
         <Route path="/users" element={<Users users={users} />} />
         <Route path="/users/:userId" element={<User users={users} />} />
+        <Route
+          path="/blogs/:blogId"
+          element={
+            <BlogDetail
+              user={user}
+              blogs={blogs}
+              updateBlog={updateBlog}
+              removeBlog={removeBlog}
+            />
+          }
+        />
       </Routes>
     </div>
   )
