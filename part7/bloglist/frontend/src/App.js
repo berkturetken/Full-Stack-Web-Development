@@ -16,7 +16,7 @@ import {
 } from './reducers/blogReducer'
 import Users from './components/Users'
 import userService from './services/user'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import User from './components/User'
 import BlogDetail from './components/BlogDetails'
 
@@ -107,6 +107,15 @@ const App = () => {
     setUser(null)
   }
 
+  const headerStyle = {
+    padding: 5,
+    backgroundColor: '#A29C9B',
+  }
+
+  const padding = {
+    paddingRight: 5,
+  }
+
   return (
     <div>
       {user === null ? (
@@ -122,14 +131,20 @@ const App = () => {
           />
         </div>
       ) : (
-        <div>
-          <h2>blogs</h2>
-          <Notification isError={isError} />
-          <p>{user.name} logged in</p>
-          <p>
+        <>
+          <div style={headerStyle}>
+            <Link style={padding} to="/">
+              blogs
+            </Link>
+            <Link style={padding} to="/users">
+              users
+            </Link>
+            <b style={padding}>{user.name} logged in</b>
             <button onClick={logout}>logout</button>
-          </p>
-        </div>
+          </div>
+          <Notification isError={isError} />
+          <h2>blogs</h2>
+        </>
       )}
       <Routes>
         <Route
