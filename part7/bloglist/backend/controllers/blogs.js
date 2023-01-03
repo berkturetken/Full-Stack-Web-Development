@@ -41,6 +41,7 @@ blogRouter.post('/', userExtractor, async (request, response, next) => {
         author: body.author,
         url: body.url,
         likes: body.likes,
+        comments: body.comment,
         user: user._id.toString(),
       })
       const savedBlog = await blog.save()
@@ -85,12 +86,50 @@ blogRouter.put('/:id', async (request, response, next) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
+    comments: body.comment,
   }
 
   try {
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
       new: true,
     })
+    if (updatedBlog) {
+      response.json(updatedBlog)
+    } else {
+      response.status(404).end()
+    }
+  } catch (exception) {
+    next(exception)
+  }
+})
+
+// Add a comment to a blog
+blogRouter.post('/:id/comments', async (request, response, next) => {
+  const body = request.body
+
+  if (body.comment === undefined) {
+    response.status(400).json({
+      error: 'comment is missing',
+    })
+  }
+
+  try {
+    const blog = await Blog.findById(request.params.id)
+    const blogToBeChanged = {
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes,
+      comments: [...blog.comments, body.comment],
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      request.params.id,
+      blogToBeChanged,
+      {
+        new: true,
+      }
+    )
     if (updatedBlog) {
       response.json(updatedBlog)
     } else {

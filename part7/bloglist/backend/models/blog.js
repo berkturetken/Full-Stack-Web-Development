@@ -5,16 +5,20 @@ const blogSchema = new mongoose.Schema({
   author: String,
   url: String,
   likes: Number,
+  comments: Array,
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 })
 
 blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     if (returnedObject.likes === undefined) {
       returnedObject.likes = 0
+    }
+    if (returnedObject.comments === undefined) {
+      returnedObject.comments = []
     }
     // returnedObject.id = returnedObject._id.toString()
     // delete returnedObject._id
