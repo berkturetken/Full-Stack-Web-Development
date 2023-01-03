@@ -1,29 +1,31 @@
-import { useState, useEffect } from 'react'
-// import Blog from './components/Blog'
+import { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-// import Togglable from './components/Togglable'
-// import BlogForm from './components/BlogForm'
-import { useDispatch } from 'react-redux'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   showNotification,
   hideNotification,
 } from './reducers/notificationReducer'
 import {
   initializeBlogs,
-  // createBlog,
-  // deleteBlog,
-  // incrementLike,
+  createBlog,
+  deleteBlog,
+  incrementLike,
 } from './reducers/blogReducer'
-import User from './components/User'
+import Users from './components/Users'
 import userService from './services/user'
+import { Routes, Route } from 'react-router-dom'
+import User from './components/User'
 
 const App = () => {
   const dispatch = useDispatch()
-  // const items = useSelector((state) => state.blogs)
-  // const blogs = [...items]
+  const items = useSelector((state) => state.blogs)
+  const blogs = [...items]
 
   const [isError, setIsError] = useState(false)
 
@@ -32,7 +34,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  // const blogFormRef = useRef()
+  const blogFormRef = useRef()
 
   // For retrieving all blogs
   useEffect(() => {
@@ -65,7 +67,6 @@ const App = () => {
     }
   }
 
-  /*
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
@@ -125,7 +126,6 @@ const App = () => {
       }, 3000)
     }
   }
-  */
 
   const logout = () => {
     console.log('logging out...')
@@ -133,14 +133,37 @@ const App = () => {
     setUser(null)
   }
 
-  /*
   const compareBlogLikes = (b1, b2) => {
     return b2.likes - b1.likes
   }
-  */
+
+  const BlogList = () => {
+    return (
+      <>
+        <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+          <BlogForm createBlog={addBlog} />
+        </Togglable>
+        <ol>
+          {/* Note: sort() method returns the reference to the same array with the sorted version */}
+          {blogs.sort(compareBlogLikes) &&
+            blogs.map((blog) => (
+              <li key={blog._id}>
+                <Blog
+                  key={blog._id}
+                  user={user}
+                  blog={blog}
+                  updateBlog={updateBlog}
+                  removeBlog={removeBlog}
+                />
+              </li>
+            ))}
+        </ol>
+      </>
+    )
+  }
 
   return (
-    <>
+    <div>
       {user === null ? (
         <div>
           <h2>Log in to application</h2>
@@ -158,31 +181,17 @@ const App = () => {
           <h2>blogs</h2>
           <Notification isError={isError} />
           <p>{user.name} logged in</p>
-          <button onClick={logout}>logout</button>
-
-          {/* <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
-          <ol> */}
-          {/* Note: sort() method returns the reference to the same array with the sorted version */}
-          {/* {blogs.sort(compareBlogLikes) &&
-              blogs.map((blog) => (
-                <li key={blog._id}>
-                  <Blog
-                    key={blog._id}
-                    user={user}
-                    blog={blog}
-                    updateBlog={updateBlog}
-                    removeBlog={removeBlog}
-                  />
-                </li>
-              ))}
-          </ol> */}
-
-          <User users={users} />
+          <p>
+            <button onClick={logout}>logout</button>
+          </p>
         </div>
       )}
-    </>
+      <Routes>
+        <Route path="/" element={<BlogList />} />
+        <Route path="/users" element={<Users users={users} />} />
+        <Route path="/users/:userId" element={<User users={users} />} />
+      </Routes>
+    </div>
   )
 }
 
