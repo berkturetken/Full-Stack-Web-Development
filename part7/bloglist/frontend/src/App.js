@@ -13,12 +13,13 @@ import {
   initializeBlogs,
   deleteBlog,
   incrementLike,
+  addCommentToBlog,
 } from './reducers/blogReducer'
 import Users from './components/Users'
 import userService from './services/user'
 import { Routes, Route, Link } from 'react-router-dom'
 import User from './components/User'
-import BlogDetail from './components/BlogDetails'
+import BlogDetails from './components/BlogDetails'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -107,8 +108,26 @@ const App = () => {
     setUser(null)
   }
 
+  const addComment = async (blogId, comment) => {
+    try {
+      dispatch(addCommentToBlog(blogId, comment))
+      dispatch(showNotification(`the comment '${comment}' is added`))
+      setIsError(false)
+      setTimeout(() => {
+        dispatch(hideNotification())
+      }, 3000)
+    } catch (exception) {
+      dispatch(showNotification('the comment could not be added'))
+      setIsError(true)
+      setTimeout(() => {
+        dispatch(hideNotification())
+      }, 3000)
+    }
+  }
+
   const headerStyle = {
     padding: 5,
+    marginBottom: 10,
     backgroundColor: '#A29C9B',
   }
 
@@ -161,11 +180,12 @@ const App = () => {
         <Route
           path="/blogs/:blogId"
           element={
-            <BlogDetail
+            <BlogDetails
               user={user}
               blogs={blogs}
               updateBlog={updateBlog}
               removeBlog={removeBlog}
+              addComment={addComment}
             />
           }
         />

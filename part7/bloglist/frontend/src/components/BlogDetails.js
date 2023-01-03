@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-const BlogDetail = ({ user, blogs, updateBlog, removeBlog }) => {
+const BlogDetails = ({ user, blogs, updateBlog, removeBlog, addComment }) => {
   const blogId = useParams().blogId
   const blog = blogs.find((b) => b._id === blogId)
+
+  const [comment, setComment] = useState('')
 
   if (!blog) {
     return null
@@ -16,10 +19,14 @@ const BlogDetail = ({ user, blogs, updateBlog, removeBlog }) => {
   }
 
   const handleRemove = () => {
-    console.log('clicked remove')
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       removeBlog(blog._id)
     }
+  }
+
+  const handleComment = (event) => {
+    event.preventDefault()
+    addComment(blog._id, comment)
   }
 
   return (
@@ -40,6 +47,17 @@ const BlogDetail = ({ user, blogs, updateBlog, removeBlog }) => {
         ''
       )}
       <h3>comments</h3>
+      <form onSubmit={handleComment}>
+        <div>
+          <input
+            type="text"
+            name="comment"
+            value={comment}
+            onChange={({ target }) => setComment(target.value)}
+          />
+          <button>add comment</button>
+        </div>
+      </form>
       {blog.comments === undefined || blog.comments.length === 0 ? (
         <p>No comment for this blog :(</p>
       ) : (
@@ -53,4 +71,4 @@ const BlogDetail = ({ user, blogs, updateBlog, removeBlog }) => {
   )
 }
 
-export default BlogDetail
+export default BlogDetails

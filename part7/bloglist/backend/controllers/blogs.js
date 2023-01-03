@@ -107,33 +107,33 @@ blogRouter.put('/:id', async (request, response, next) => {
 blogRouter.post('/:id/comments', async (request, response, next) => {
   const body = request.body
 
-  if (body.comment === undefined) {
-    response.status(400).json({
-      error: 'comment is missing',
-    })
-  }
-
   try {
-    const blog = await Blog.findById(request.params.id)
-    const blogToBeChanged = {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: blog.likes,
-      comments: [...blog.comments, body.comment],
-    }
-
-    const updatedBlog = await Blog.findByIdAndUpdate(
-      request.params.id,
-      blogToBeChanged,
-      {
-        new: true,
-      }
-    )
-    if (updatedBlog) {
-      response.json(updatedBlog)
+    if (body.comment === undefined || body.comment === null) {
+      response.status(400).json({
+        error: 'comment is missing',
+      })
     } else {
-      response.status(404).end()
+      const blog = await Blog.findById(request.params.id)
+      const blogToBeChanged = {
+        title: blog.title,
+        author: blog.author,
+        url: blog.url,
+        likes: blog.likes,
+        comments: [...blog.comments, body.comment],
+      }
+
+      const updatedBlog = await Blog.findByIdAndUpdate(
+        request.params.id,
+        blogToBeChanged,
+        {
+          new: true,
+        }
+      )
+      if (updatedBlog) {
+        response.json(updatedBlog)
+      } else {
+        response.status(404).end()
+      }
     }
   } catch (exception) {
     next(exception)
