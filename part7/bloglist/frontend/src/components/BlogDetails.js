@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
 
 const BlogDetails = ({ user, blogs, updateBlog, removeBlog, addComment }) => {
   const blogId = useParams().blogId
@@ -29,44 +30,68 @@ const BlogDetails = ({ user, blogs, updateBlog, removeBlog, addComment }) => {
     addComment(blog._id, comment)
   }
 
+  const padding = {
+    padding: 25,
+  }
+
+  const margin = {
+    marginTop: 10,
+  }
+
   return (
     <div>
       <h2>
         {blog.title}, {blog.author}
       </h2>
-      <a href={blog.url}>{blog.url}</a>
       <p>
-        {blog.likes} likes <button onClick={handleLikes}>like</button>{' '}
+        <a href={blog.url}>{blog.url}</a>
       </p>
-      <p>added by {blog.user.name} </p>
+      <p>
+        {blog.likes} likes{' '}
+        <Button variant="success" onClick={handleLikes}>
+          Like
+        </Button>
+      </p>
+      <p>
+        Added by <i>{blog.user.name}</i>
+      </p>
       {user.username === blog.user.username ? (
-        <button id="removeButton" onClick={handleRemove}>
-          remove
-        </button>
+        <>
+          <Button variant="danger" id="removeButton" onClick={handleRemove}>
+            Remove
+          </Button>
+          <br />
+          <br />
+        </>
       ) : (
-        ''
+        <br />
       )}
-      <h3>comments</h3>
-      <form onSubmit={handleComment}>
-        <div>
-          <input
+
+      <h3>Comments</h3>
+      <Form onSubmit={handleComment}>
+        <Form.Group>
+          <Form.Control
             type="text"
             name="comment"
             value={comment}
             onChange={({ target }) => setComment(target.value)}
           />
-          <button>add comment</button>
-        </div>
-      </form>
-      {blog.comments === undefined || blog.comments.length === 0 ? (
-        <p>No comment for this blog :(</p>
-      ) : (
-        <ul>
-          {blog.comments.map((comment, index) => (
-            <li key={index}>{comment}</li>
-          ))}
-        </ul>
-      )}
+          <Button style={margin} type="submit">
+            Add Comment
+          </Button>
+        </Form.Group>
+      </Form>
+      <div style={padding}>
+        {blog.comments === undefined || blog.comments.length === 0 ? (
+          <p>No comment found :(</p>
+        ) : (
+          <ul>
+            {blog.comments.map((comment, index) => (
+              <li key={index}>{comment}</li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }

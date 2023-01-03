@@ -8,18 +8,15 @@ import {
   showNotification,
   hideNotification,
 } from '../reducers/notificationReducer'
+import { Table } from 'react-bootstrap'
 
 const BlogList = ({ blogs, handleIsError }) => {
   const blogFormRef = useRef()
 
   const dispatch = useDispatch()
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
+  const margin = {
+    marginTop: 20,
   }
 
   const addBlog = async (blogObject) => {
@@ -50,22 +47,27 @@ const BlogList = ({ blogs, handleIsError }) => {
 
   return (
     <>
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <h2>Blogs</h2>
+      <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
-      <ol>
-        {/* Note: sort() method returns the reference to the same array with the sorted version */}
-        {blogs.sort(compareBlogLikes) &&
-          blogs.map((blog) => (
-            <li key={blog._id}>
-              <div className="blog" style={blogStyle} data-testid="titleAuthor">
-                <Link to={`blogs/${blog._id}`}>
-                  {blog.title}, {blog.author}
-                </Link>
-              </div>
-            </li>
-          ))}
-      </ol>
+      <Table striped bordered hover variant="dark" style={margin}>
+        <tbody>
+          <tr>
+            <th>Blog Name</th>
+            <th>Author</th>
+          </tr>
+          {blogs.sort(compareBlogLikes) &&
+            blogs.map((blog) => (
+              <tr key={blog._id}>
+                <td>
+                  <Link to={`blogs/${blog._id}`}>{blog.title}</Link>
+                </td>
+                <td>{blog.author}</td>
+              </tr>
+            ))}
+        </tbody>
+      </Table>
     </>
   )
 }

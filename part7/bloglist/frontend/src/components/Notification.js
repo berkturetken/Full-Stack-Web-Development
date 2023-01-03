@@ -1,3 +1,4 @@
+import { Alert } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 
 const Notification = ({ isError }) => {
@@ -7,33 +8,10 @@ const Notification = ({ isError }) => {
     return null
   }
 
-  const successMessageStyle = {
-    color: 'green',
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  }
-
-  const errorMessageStyle = {
-    color: 'red',
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  }
-
   return (
-    <div
-      style={isError ? errorMessageStyle : successMessageStyle}
-      className="error"
-    >
+    <Alert variant={isError === true ? 'danger' : 'success'}>
       {notification}
-    </div>
+    </Alert>
   )
 }
 

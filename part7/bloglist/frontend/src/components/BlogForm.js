@@ -1,9 +1,15 @@
 import { useState } from 'react'
+import { Form, Button } from 'react-bootstrap'
 
 const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  const margin = {
+    marginTop: 10,
+    marginBottom: 10,
+  }
 
   const addBlog = (event) => {
     event.preventDefault()
@@ -19,11 +25,11 @@ const BlogForm = ({ createBlog }) => {
 
   return (
     <div>
-      <h2>create new</h2>
-      <form onSubmit={addBlog}>
-        <div>
-          title:
-          <input
+      <h4>Create New Blog</h4>
+      <Form onSubmit={addBlog}>
+        <Form.Group>
+          <Form.Label>Title:</Form.Label>
+          <Form.Control
             id="title"
             type="text"
             value={title}
@@ -31,10 +37,9 @@ const BlogForm = ({ createBlog }) => {
             onChange={({ target }) => setTitle(target.value)}
             data-testid="titleInput"
           />
-        </div>
-        <div>
-          author:
-          <input
+          <br />
+          <Form.Label>Title:</Form.Label>
+          <Form.Control
             id="author"
             type="text"
             value={author}
@@ -42,10 +47,9 @@ const BlogForm = ({ createBlog }) => {
             onChange={({ target }) => setAuthor(target.value)}
             data-testid="authorInput"
           />
-        </div>
-        <div>
-          url:
-          <input
+          <br />
+          <Form.Label>Url:</Form.Label>
+          <Form.Control
             id="url"
             type="text"
             value={url}
@@ -53,11 +57,16 @@ const BlogForm = ({ createBlog }) => {
             onChange={({ target }) => setUrl(target.value)}
             data-testid="urlInput"
           />
-        </div>
-        <button id="createButton" type="submit" data-testid="createButton">
-          create
-        </button>
-      </form>
+          <Button
+            style={margin}
+            id="createButton"
+            type="submit"
+            data-testid="createButton"
+          >
+            Create
+          </Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }

@@ -20,6 +20,7 @@ import userService from './services/user'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import User from './components/User'
 import BlogDetails from './components/BlogDetails'
+import { Nav, Navbar, Button } from 'react-bootstrap'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -128,21 +129,16 @@ const App = () => {
     }
   }
 
-  const headerStyle = {
-    padding: 5,
-    marginBottom: 10,
-    backgroundColor: '#A29C9B',
-  }
-
-  const padding = {
-    paddingRight: 5,
+  const loggedInUsernameStyle = {
+    paddingRight: 15,
+    color: 'white',
   }
 
   return (
-    <div>
+    <div className="container">
       {user === null ? (
         <div>
-          <h2>Log in to application</h2>
+          <h2>Login to Blog Application</h2>
           <Notification isError={isError} />
           <LoginForm
             handleLogin={handleLogin}
@@ -154,45 +150,51 @@ const App = () => {
         </div>
       ) : (
         <>
-          <div style={headerStyle}>
-            <Link style={padding} to="/">
-              blogs
-            </Link>
-            <Link style={padding} to="/users">
-              users
-            </Link>
-            <b style={padding}>{user.name} logged in</b>
-            <button onClick={logout}>logout</button>
-          </div>
+          <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+              <Nav className="me-auto">
+                <Nav.Link href="#" as="span">
+                  <Link to="/">Blogs</Link>
+                </Nav.Link>
+                <Nav.Link href="#" as="span">
+                  <Link to="/users">Users</Link>
+                </Nav.Link>
+              </Nav>
+            </Navbar.Collapse>
+            <em style={loggedInUsernameStyle}>{user.name}</em>
+            <Button variant="warning" onClick={logout}>
+              Logout
+            </Button>
+          </Navbar>
           <Notification isError={isError} />
-          <h2>blogs</h2>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <BlogList
+                  blogs={blogs}
+                  handleIsError={({ val }) => setIsError(val)} // TODO: Fix here
+                />
+              }
+            />
+            <Route path="/users" element={<Users users={users} />} />
+            <Route path="/users/:userId" element={<User users={users} />} />
+            <Route
+              path="/blogs/:blogId"
+              element={
+                <BlogDetails
+                  user={user}
+                  blogs={blogs}
+                  updateBlog={updateBlog}
+                  removeBlog={removeBlog}
+                  addComment={addComment}
+                />
+              }
+            />
+          </Routes>
         </>
       )}
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <BlogList
-              blogs={blogs}
-              handleIsError={({ val }) => setIsError(val)} // TODO: Fix here
-            />
-          }
-        />
-        <Route path="/users" element={<Users users={users} />} />
-        <Route path="/users/:userId" element={<User users={users} />} />
-        <Route
-          path="/blogs/:blogId"
-          element={
-            <BlogDetails
-              user={user}
-              blogs={blogs}
-              updateBlog={updateBlog}
-              removeBlog={removeBlog}
-              addComment={addComment}
-            />
-          }
-        />
-      </Routes>
     </div>
   )
 }

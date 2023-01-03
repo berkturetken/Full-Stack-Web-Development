@@ -10,11 +10,14 @@ const User = ({ users }) => {
   return (
     <div>
       <h2>{user.name}</h2>
-      <h3>added blogs</h3>
+      <br />
+      <h3>Added Blogs</h3>
       <ul>
-        {user.blogs.map((blog, index) => (
-          <li key={index}>{blog.title}</li>
-        ))}
+        {user.blogs.length === 0 ? (
+          <p>No blogs found :(</p>
+        ) : (
+          user.blogs.map((blog, index) => <li key={index}>{blog.title}</li>)
+        )}
       </ul>
     </div>
   )
