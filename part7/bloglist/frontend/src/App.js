@@ -1,49 +1,50 @@
-import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import { useState, useEffect } from 'react'
+// import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import Togglable from './components/Togglable'
-import BlogForm from './components/BlogForm'
-import { useDispatch, useSelector } from 'react-redux'
+// import Togglable from './components/Togglable'
+// import BlogForm from './components/BlogForm'
+import { useDispatch } from 'react-redux'
 import {
   showNotification,
   hideNotification,
 } from './reducers/notificationReducer'
 import {
   initializeBlogs,
-  createBlog,
-  deleteBlog,
-  incrementLike,
+  // createBlog,
+  // deleteBlog,
+  // incrementLike,
 } from './reducers/blogReducer'
+import User from './components/User'
+import userService from './services/user'
 
 const App = () => {
   const dispatch = useDispatch()
-  const items = useSelector((state) => state.blogs)
-  const blogs = [...items]
+  // const items = useSelector((state) => state.blogs)
+  // const blogs = [...items]
 
   const [isError, setIsError] = useState(false)
 
   const [user, setUser] = useState(null)
+  const [users, setUsers] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const blogFormRef = useRef()
+  // const blogFormRef = useRef()
 
   // For retrieving all blogs
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
 
-  // For logging user
+  // For retrieving all users and logging a user
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
+    userService.getAll().then((users) => setUsers(users))
+    const user = userService.getUser()
+    setUser(user)
+    blogService.setToken(userService.getToken())
   }, [])
 
   const handleLogin = async (event) => {
@@ -51,8 +52,8 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
       setUser(user)
-      blogService.setToken(user.token)
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
+      userService.setUser(user)
+      blogService.setToken(userService.getToken())
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -64,6 +65,7 @@ const App = () => {
     }
   }
 
+  /*
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
@@ -123,16 +125,19 @@ const App = () => {
       }, 3000)
     }
   }
+  */
 
   const logout = () => {
     console.log('logging out...')
-    window.localStorage.removeItem('loggedBlogAppUser')
+    userService.clearUser()
     setUser(null)
   }
 
+  /*
   const compareBlogLikes = (b1, b2) => {
     return b2.likes - b1.likes
   }
+  */
 
   return (
     <>
@@ -152,15 +157,15 @@ const App = () => {
         <div>
           <h2>blogs</h2>
           <Notification isError={isError} />
-          <p>
-            {user.name} logged in <button onClick={logout}>logout</button>
-          </p>
-          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+          <p>{user.name} logged in</p>
+          <button onClick={logout}>logout</button>
+
+          {/* <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />
           </Togglable>
-          <ol>
-            {/* Note: sort() method returns the reference to the same array with the sorted version */}
-            {blogs.sort(compareBlogLikes) &&
+          <ol> */}
+          {/* Note: sort() method returns the reference to the same array with the sorted version */}
+          {/* {blogs.sort(compareBlogLikes) &&
               blogs.map((blog) => (
                 <li key={blog._id}>
                   <Blog
@@ -172,7 +177,9 @@ const App = () => {
                   />
                 </li>
               ))}
-          </ol>
+          </ol> */}
+
+          <User users={users} />
         </div>
       )}
     </>
