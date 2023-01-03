@@ -17,7 +17,7 @@ import {
 } from './reducers/blogReducer'
 import Users from './components/Users'
 import userService from './services/user'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import User from './components/User'
 import BlogDetails from './components/BlogDetails'
 
@@ -32,6 +32,8 @@ const App = () => {
   const [users, setUsers] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
+  const navigate = useNavigate()
 
   // For retrieving all blogs
   useEffect(() => {
@@ -88,6 +90,7 @@ const App = () => {
   const removeBlog = async (blogId) => {
     try {
       dispatch(deleteBlog(blogId))
+      navigate('/')
       dispatch(showNotification('deleted successfully'))
       setIsError(false)
       setTimeout(() => {
